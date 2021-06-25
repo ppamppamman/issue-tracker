@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components';
 
 import ResponsiveLayout from '../components/common/ResponsiveLayout';
@@ -21,6 +21,38 @@ const IssueDetailPage = () => {
   }, []);
 
 
+  const countSharpNum = (str) => {
+    let count = 0;
+    str.split('').forEach(letter => { if (letter === "#") count++; });
+    return count;
+  }
+
+  const createTextBlock = (comment) => {
+    console.log("createTextBlock", comment)
+    const textObj = { tag: '', contents: comment };
+  
+    switch (textObj.contents[0]) {
+      case "#":
+        const num = countSharpNum(textObj.contents);
+        textObj.tag = `<h${num}>${textObj.contents.slice(num)}</h${num}>`;
+        break;
+      case "-":
+        textObj.tag = `<li>${textObj.contents.slice(1)}</li>`;
+        break;
+      default:
+        textObj.tag = `<p>${textObj.contents}</p>`;
+        break;
+    }
+    console.log(textObj.tag)
+    return textObj.tag;
+  }
+  const parseCommentRenderBlock = (content) => {
+    return content.split("\n").map((comment) => {
+      return createTextBlock(comment);
+    })
+  }
+
+
   if (Object.keys(fetchedIssueInfo).length === 0) return <></>;
   return (
     <AddIssueLayout>
@@ -31,36 +63,22 @@ const IssueDetailPage = () => {
 
       </ProfilePictureBlock>
       <ContentBlock>
-        {fetchedIssueInfo.commentDTO.map((comment) => {
+        {fetchedIssueInfo.commentDTO.map((comment, i) => {
           return (
-            <ContentRow>
+            <ContentRow key={`comment-${i}`}>
               <ProfileLayer>
                 <ProfileImg src={comment.userDTO.profileImage} />
               </ProfileLayer>
               <CommentLayer>
                 <CommentOutput>
-                  {comment.content}
+                  {parseCommentRenderBlock(comment.content).map((comment) => {
+                    return <div dangerouslySetInnerHTML={{__html: comment}}></div>
+                  })}
                 </CommentOutput>
               </CommentLayer>
             </ContentRow>
           );
         })}
-        
-          
-        {/* <OptionBlock>
-          <OptionLayer>
-            <Dropdown info={filterInfo["AssigneeFilterInfo"]}/>
-            <button><Plus/></button>
-          </OptionLayer>
-          <OptionLayer>
-            <Dropdown info={filterInfo["LabelFilterInfo"]}/>
-            <button><Plus/></button>
-          </OptionLayer>
-          <OptionLayer>
-            <Dropdown info={filterInfo["MilestoneFilterInfo"]}/>
-            <button><Plus/></button>
-          </OptionLayer>
-        </OptionBlock> */}
       </ContentBlock>
     </AddIssueLayout>
   )
@@ -74,6 +92,7 @@ const AddIssueLayout = styled(ResponsiveLayout)`
 
   width: 100%;
   height: 100%;
+  min-height: 100vh;
   position: relative;
 `
 const TitleBlock = styled.div`
