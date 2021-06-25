@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ResponsiveLayout from '../components/common/ResponsiveLayout';
 import Plus from '../components/common/icons/Plus';
 import Close from '../components/common/icons/Close';
-import DropDown from 'components/common/DropDown';
+import Dropdown from 'components/common/Dropdown';
 
 const AddIssuePage = () => {
   const [lastPressedKey, setLastPressedKey] = useState<any>();
@@ -121,15 +121,15 @@ const AddIssuePage = () => {
         </InputLayer>
         <OptionBlock>
           <OptionLayer>
-            <DropDown info={filterInfo["AssigneeFilterInfo"]}/>
+            <Dropdown info={filterInfo["AssigneeFilterInfo"]}/>
             <button><Plus/></button>
           </OptionLayer>
           <OptionLayer>
-            <DropDown info={filterInfo["LabelFilterInfo"]}/>
+            <Dropdown info={filterInfo["LabelFilterInfo"]}/>
             <button><Plus/></button>
           </OptionLayer>
           <OptionLayer>
-            <DropDown info={filterInfo["MilestoneFilterInfo"]}/>
+            <Dropdown info={filterInfo["MilestoneFilterInfo"]}/>
             <button><Plus/></button>
           </OptionLayer>
         </OptionBlock>

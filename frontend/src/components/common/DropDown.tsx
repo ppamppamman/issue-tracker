@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import * as Icons from 'components/common/icons';
 
-const DropDown = ({ info }) => {
+const Dropdown = ({ info }) => {
   
   const [isClicked, setIsClicked] = useState(false);
 
@@ -13,24 +13,47 @@ const DropDown = ({ info }) => {
   }
 
   return (
-    <DropdownLayout alignment={info.alignment}>
+    <DropdownLayout alignment={info.alignment && info.alignment}>
       <DropdownButton onClick={handleDropDownButtonClick}> 
         {Icons[info.icon] && Icons[info.icon]()}<DropdownButtonText>{info.name}</DropdownButtonText>
       </DropdownButton>
       {isClicked && 
-      
-      <DropDownLayer isClicked={isClicked}>
-        <DropdownHeader>{info.header}</DropdownHeader>
-        <DropdownUnorderedList>
-          {info.elements.map((element, i) => {
-            return (
-              <DropdownElement key={`dropdown-${i}`}>
-                {element.contents} <Radio type="radio" value={element.value} name={`dropdown-${info.name}`} />
-              </DropdownElement>
-            )
-          })}
-        </DropdownUnorderedList>
-      </DropDownLayer>
+        <DropdownLayer isClicked={isClicked}>
+          <DropdownHeader>{info.header}</DropdownHeader>
+          <DropdownUnorderedList>
+            {info.elements.map((element, i) => {
+              return (
+                <DropdownElement key={`dropdown-${i}`}>
+                  {element.profileImage && <>
+                      <DropdownGroup>
+                        <DropdownImg src={element.profileImage} />
+                        {element.name} 
+                      </DropdownGroup>
+                      <Radio type="radio" value={element.userId} name={`dropdown-profileImage-${info.name}`} />
+                    </>
+                  }
+                  {element.labelId && <>
+                      <DropdownGroup>
+                        <DropdownLabel color={element.color} />
+                        {element.title} 
+                      </DropdownGroup>
+                      <Radio type="radio" value={element.labelId} name={`dropdown-label-${info.name}`} />
+                    </>
+                  }
+                  {/* {element.profileImage && <>
+                      <DropdownGroup>
+                        <DropdownImg src={element.profileImage} />
+                        {element.name} 
+                      </DropdownGroup>
+                      <Radio type="radio" value={element.userId} name={`dropdown-profileImage-${info.name}`} />
+                    </>
+                  } */}
+                  
+                </DropdownElement>
+              )
+            })}
+          </DropdownUnorderedList>
+        </DropdownLayer>
       }
     </DropdownLayout>
   )
@@ -40,10 +63,12 @@ const DropdownLayout = styled.div<any>`
   display: flex;
   justify-content: ${({alignment}) => !alignment ? '': 'flex-end'};
 `;
+
 const DropdownButton = styled.button`
   padding: 0 30px;
   border: none;
   background-color: rgba( 255, 255, 255, 0 );
+  cursor: pointer;
   /* background: #F7F7FC; */
   /* border: 1px solid #D9DBE9;
   border-radius: 11px 0px 0px 11px; */
@@ -55,7 +80,7 @@ const DropdownButton = styled.button`
   span { margin-left: 10px; white-space:nowrap; }
 `;
 
-const DropDownLayer = styled.div<any>`
+const DropdownLayer = styled.div<any>`
   width: 240px;
   position: absolute;
   margin-top: 45px;
@@ -101,9 +126,31 @@ const DropdownElement = styled.li`
   }
 `;
 
+const DropdownImg = styled.img`
+  height: 100%;
+  border-radius: 50%;
+`;
+const DropdownLabel = styled.div`
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+
+  background-color: ${({color}) => color};
+`;
+
+const DropdownGroup = styled.div`
+  height: 100%;
+  
+  display: flex;
+  align-items: center;
+
+  img { margin-right: 15px; }
+  div { margin-right: 15px; }
+`;
+
 const DropdownButtonText = styled.span`
   cursor: pointer;
 `;
 const Radio = styled.input``
 
-export default DropDown;
+export default Dropdown;

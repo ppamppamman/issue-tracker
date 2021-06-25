@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import DropDown from 'components/common/DropDown';
-// import ArrowIcon from 'components/common/icons/ArrowIcon';
-
+import Dropdown from 'components/common/Dropdown';
 import Label from 'components/common/Label';
+
+import FilterData from './FilterData';
 
 import API from 'lib/API/API';
 
@@ -15,18 +15,30 @@ const IssueList = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       const result = await API.get.issues("is open");
-      console.log("fetchIssues", result)
+      // console.log("fetchIssues", result);
       setIssues(result.issueList);
     }
     fetchIssues();
 
+    // const fetchUsers = async () => {
+    //   const result = 
+    //   // console.log("fetchUsers", result);
+    //   return result;
+    // }
+    // const userInfo = fetchUsers();
 
-    const fetchFilterMockData = async () => {
-      const response = await fetch('/mockData.json');
-      const result = await response.json();
-      setFilterInfo(result[window.location.pathname]);
+    const createFilterData = async () => {
+      const result = FilterData;
+      // console.log("fetchFilterMockData", result);
+      result["IssueManagerFilterInfo"].elements = await API.get.users();
+      result["IssueLabelFilterInfo"].elements = await API.get.labels();
+      result["IssueMilestoneFilterInfo"].elements = await API.get.milestones()
+      result["IssueAuthorFilterInfo"].elements = await API.get.users();
+      
+      console.log('createFilterData', result)
+      setFilterInfo(result);
     }
-    fetchFilterMockData();
+    createFilterData();
     
   }, [])
 
@@ -42,37 +54,16 @@ const IssueList = () => {
           <button> 닫힌 이슈 </button>
         </IssueListButtonGroupLayer>
         <IssueListFilterGroupLayer>
-          <DropDown info={filterInfo["IssueManagerFilterInfo"]} />
-          <DropDown info={filterInfo["IssueLabelFilterInfo"]} />
-          <DropDown info={filterInfo["IssueMilestoneFilterInfo"]} />
-          <DropDown info={filterInfo["IssueAuthorFilterInfo"]} />
+          <Dropdown info={filterInfo["IssueManagerFilterInfo"]} />
+          <Dropdown info={filterInfo["IssueLabelFilterInfo"]} />
+          <Dropdown info={filterInfo["IssueMilestoneFilterInfo"]} />
+          <Dropdown info={filterInfo["IssueAuthorFilterInfo"]} />
         </IssueListFilterGroupLayer>
       </IssueListHeader>
 
-      {/* for test */}
-      {Array(3).fill(true).map((_, i) => {
+      {issues.map((issue, i) => {
         return (
-          <IssueListContents key={`test-${i}`}>
-            <IssueListCheckBoxLayer>
-              <input type="checkbox" />
-            </IssueListCheckBoxLayer>
-            <IssueListDetailInfomationLayer>
-              <DetailInformationTitleArea>
-                <DetailInformationTitle> 이슈 제목 </DetailInformationTitle>
-                <Label type={"DEFAULT"} value={"레이블 이름"} />
-              </DetailInformationTitleArea>
-              <DetailInformationContents># 이슈 번호 ... </DetailInformationContents>
-            </IssueListDetailInfomationLayer>
-            <IssueListProfileLayer>
-              profile img
-            </IssueListProfileLayer>
-          </IssueListContents>
-        )
-      })}
-      {
-        issues.map((issue, i) => {
-          return (
-            <IssueListContents key={`issue-${i}`}>
+          <IssueListContents key={`issue-${i}`}>
             <IssueListCheckBoxLayer>
               <input type="checkbox" />
             </IssueListCheckBoxLayer>
@@ -87,9 +78,8 @@ const IssueList = () => {
               <ProfileImg src={issue.issueDTO.userDTO.profileImage} />
             </IssueListProfileLayer>
           </IssueListContents>
-          )
-        })
-      }
+        )
+      })}
     </IssueListLayout>
   )
 }

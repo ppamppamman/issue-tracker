@@ -1,36 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import DropDown from 'components/common/DropDown';
+import Dropdown from 'components/common/Dropdown';
 import ArrowIcon from 'components/common/icons/ArrowIcon';
 
 const IssueCategoryFilter = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const IssueCategoryFilterInfo = {
-    name: "필터",
-    header: "이슈 필터",
-    icon: ArrowIcon,
-    elements: [
-      {contents: "열린 이슈", value: "OPENED"},
-      {contents: "내가 작성한 이슈", value: "WRITTEN"},
-      {contents: "나에게 할당된 이슈", value: "ASSIGNED"},
-      {contents: "내가 댓글을 남긴 이슈", value: "REPLIED"},
-      {contents: "닫힌 이슈", value: "CLOSED"},
-    ]
-  }
+  const [filterInfo, setFilterInfo] = useState<any>({});
+  
+  useEffect(() => {
+    const fetchFilterMockData = async () => {
+      const response = await fetch('/mockData.json');
+      const result = await response.json();
+      setFilterInfo(result[window.location.pathname]);
+    }
+    fetchFilterMockData();
+
+    // IssueCategoryFilterInfo.
+  }, [])
 
   const handleFilterButtonClick = () => {
     if (isClicked) setIsClicked(false);
     else setIsClicked(true);
   }
 
+  if (Object.keys(filterInfo).length === 0) return <></>;
   return (
     <FilterHeaderLayer>
       <FilterHeaderBlock>
         
         {/* <FilterDropdownButton onClick={handleFilterButtonClick}> 필터 </FilterDropdownButton> */}
-        <DropDown info={IssueCategoryFilterInfo} />
+        <Dropdown info={filterInfo["IssueCategoryFilterInfo"]} />
         
         <FilterSearchInput />
       </FilterHeaderBlock>
