@@ -2,9 +2,6 @@ import { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components';
 
 import ResponsiveLayout from '../components/common/ResponsiveLayout';
-import Plus from '../components/common/icons/Plus';
-import Close from '../components/common/icons/Close';
-import Dropdown from 'components/common/Dropdown';
 
 import API from 'lib/API/API';
 
@@ -36,7 +33,7 @@ const IssueDetailPage = () => {
       <ContentBlock>
         {fetchedIssueInfo.commentDTO.map((comment) => {
           return (
-            <>
+            <ContentRow>
               <ProfileLayer>
                 <ProfileImg src={comment.userDTO.profileImage} />
               </ProfileLayer>
@@ -45,7 +42,7 @@ const IssueDetailPage = () => {
                   {comment.content}
                 </CommentOutput>
               </CommentLayer>
-            </>
+            </ContentRow>
           );
         })}
         
@@ -87,7 +84,12 @@ const ContentBlock = styled.div`
   margin-top: 3.2rem;
   display: flex;
   flex-direction: column;
-`
+`;
+const ContentRow = styled.div`
+  width: 100%;
+  display: flex;
+  
+`;
 
 const AddIssueTitle = styled.div`
   font-size: var(--TitleFontSize);
@@ -120,6 +122,7 @@ const TitleInput = styled.input`
 `
 
 const CommentLayer = styled.div`
+  width: 100%;
   margin-bottom: 1.6rem;
 
   display: flex;
@@ -144,7 +147,6 @@ const CommentInput = styled.textarea`
 `
 
 const CommentOutput = styled.div`
-  width: 100%;
   border-radius: 1.4rem;
   background-color: #EFF0F6;
   border: none;
