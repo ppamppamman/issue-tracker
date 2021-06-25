@@ -22,6 +22,23 @@ const API = {
         return response.json();
       });
       // console.log("API call", result);
+    },
+    users: async () => {
+      return await fetch(`${END_POINT}/users`, {...headerMaker({token: TOKEN.accessToken})}).then((response) => {
+        return response.json();
+      });
+    },
+    labels: async () => {
+      const result = await fetch(`${END_POINT}/labels`, {...headerMaker({token: TOKEN.accessToken})}).then((response) => {
+        return response.json();
+      });
+      return result.labels;
+    },
+    milestones: async () => {
+      const result = await fetch(`${END_POINT}/milestones`, {...headerMaker({token: TOKEN.accessToken})}).then((response) => {
+        return response.json();
+      });
+      return result.milestones;
     }
   },
   post: {},
